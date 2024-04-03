@@ -29,7 +29,7 @@ def pi_pretty_print(pi_digits: str, counter=-2, group_size=5, newline_group=10, 
 
     for digit in pi_digits:
 
-        if output_limit > 0 and len(output_buffer) >= output_limit: # Stop if the output limit is set and reached.
+        if output_limit > 0 and current_digit_counter >= output_limit: # Stop if the output limit is set and reached.
             break
 
         if current_digit_counter <= 0: # Skip the "3.", just added to the buffer.
@@ -57,9 +57,10 @@ def pi_pretty_print(pi_digits: str, counter=-2, group_size=5, newline_group=10, 
 if __name__ == "__main__":
     page_number = 1
     data = get_page(page_number)
-    data = data[:1000]
+    data_1 = data[:1002]
+    data_2 = data[1002:2000]
 
-    data, counter = pi_pretty_print(data, counter=-2, group_size=5, newline_group=10, output_limit=1000)
+    data, counter = pi_pretty_print(data_1, counter=-2, group_size=5, newline_group=10)
+    print(data, counter)
 
-    print(data)
-    print(len(data))
+    
