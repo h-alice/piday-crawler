@@ -12,6 +12,12 @@ def get_page(page_number):
         "page": page_number
     }
     response = requests.get(entrypoint, params=payload, headers={"User-Agent": AGENT})
+
+    if response.status_code != 200:
+        raise ValueError("Failed to fetch page: %s" % response.status_code)
+    elif response.text == "":
+        raise StopIteration("Empty page, stopping.")
+    
     return response.json()
 
 if __name__ == "__main__":
