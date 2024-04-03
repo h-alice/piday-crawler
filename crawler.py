@@ -20,8 +20,46 @@ def get_page(page_number):
     
     return response.json()
 
+def pi_pretty_print(pi_digits: str, counter=-2, group_size=5, newline_group=10, output_limit=-1):
+    """ Pretty print the digits of pi """
+    # The -2 of counter is to skip the "3." part
+    output_buffer = ""
+
+    current_digit_counter = counter
+
+    for digit in pi_digits:
+
+        if output_limit > 0 and len(output_buffer) >= output_limit: # Stop if the output limit is set and reached.
+            break
+
+        if current_digit_counter <= 0: # Skip the "3.", just added to the buffer.
+            output_buffer += digit
+            current_digit_counter += 1
+        else:
+            if current_digit_counter % group_size == 0: # Add a space every `group_size` digits.
+                output_buffer += " "
+            output_buffer += digit
+            current_digit_counter += 1
+        
+        if current_digit_counter % group_size == 0:  # Invoke only when the current digit is a multiple of `group_size`.
+            current_group = current_digit_counter // group_size
+            if current_group == 0: # Skip the first group. (the '3.' part)
+                continue
+            elif (current_digit_counter // group_size) % newline_group == 0: # Add a newline every `newline_group` groups.
+                output_buffer += "\n "
+
+    return output_buffer, current_digit_counter
+
+
+
+
+
 if __name__ == "__main__":
     page_number = 1
     data = get_page(page_number)
+    data = data[:1000]
+
+    data, counter = pi_pretty_print(data, counter=-2, group_size=5, newline_group=10, output_limit=1000)
+
     print(data)
     print(len(data))
