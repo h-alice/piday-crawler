@@ -43,13 +43,13 @@ def pi_pretty_print(current_buffer, pi_digits: str, counter=-2, group_size=5, ne
             current_digit_counter += 1 # Increment counter.
         else:
             if current_digit_counter % group_size == 0: # Add a space every `group_size` digits.
-                output_buffer += " " # Add a space., after digit group.
-            output_buffer += digit
-            current_digit_counter += 1
+                output_buffer += " "   # Add a space., after digit group.
+            output_buffer += digit     # Add digit to the buffer.
+            current_digit_counter += 1 # Increment counter.
         
-        if current_digit_counter % group_size == 0:  # Invoke only when the current digit is a multiple of `group_size`.
+        if current_digit_counter % group_size == 0:     # Invoke only when the current digit is a multiple of `group_size`.
             current_group = current_digit_counter // group_size
-            if current_group == 0: # Skip the first group. (the '3.' part)
+            if current_group == 0:     # Skip the first line, there shouldn'e be newline between the "3." and the "1".
                 continue
             elif (current_digit_counter // group_size) % newline_group == 0: # Add a newline every `newline_group` groups.
                 if with_line_digit_counter:
