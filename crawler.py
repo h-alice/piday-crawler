@@ -1,11 +1,11 @@
 import requests
-
-
-entrypoint_sample = "https://www.piday.org/wp-json/millionpi/v1/million?action=example_ajax_request&page=3"
+import sys
 
 AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
 
 def get_page(page_number):
+    """ Fetch a page from the million pi API """
+
     entrypoint = "https://www.piday.org/wp-json/millionpi/v1/million"
     payload = {
         "action": "example_ajax_request",
@@ -20,11 +20,17 @@ def get_page(page_number):
     
     return response.json()
 
-def pi_pretty_print(pi_digits: str, counter=-2, group_size=5, newline_group=10, output_limit=-1):
-    """ Pretty print the digits of pi """
-    # The -2 of counter is to skip the "3." part
-    output_buffer = ""
+def pi_pretty_print(current_buffer, pi_digits: str, counter=-2, group_size=5, newline_group=10, output_limit=-1):
+    """ Pretty print the digits of pi.  
 
+    Returns:
+        buffer (str): The pretty printed digits of pi.
+        counter (int): The number of current digits after the decimal point.
+    """
+
+    output_buffer = current_buffer
+
+    # The -2 of counter is to skip the "3." part.
     current_digit_counter = counter
 
     for digit in pi_digits:
@@ -50,17 +56,23 @@ def pi_pretty_print(pi_digits: str, counter=-2, group_size=5, newline_group=10, 
 
     return output_buffer, current_digit_counter
 
-
-
-
-
 if __name__ == "__main__":
-    page_number = 1
-    data = get_page(page_number)
-    data_1 = data[:1002]
-    data_2 = data[1002:2000]
 
-    data, counter = pi_pretty_print(data_1, counter=-2, group_size=5, newline_group=10)
-    print(data, counter)
+    if len(sys.argv) > 1:
+        max_digit = int(sys.argv[1])
+    else:
+        print("Usage: python crawler.py <max_digit>")
+        print("Outputs the first <max_digit> digits of pi after the decimal point.")
+    
+    buf = ""
+
+    counter = -2
+    page_counter = 1
+    while counter < max_digit:
+        data = get_page(page_counter)
+        buf, counter = pi_pretty_print(buf, data, counter=counter, group_size=5, newline_group=10, output_limit=max_digit)
+        page_counter += 1
+
+    print(buf)
 
     
