@@ -1,4 +1,5 @@
 import requests
+import argparse
 import sys
 
 AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
@@ -60,21 +61,23 @@ def pi_pretty_print(current_buffer, pi_digits: str, counter=-2, group_size=5, ne
 
 if __name__ == "__main__":
 
-    if len(sys.argv) > 1:
-        max_digit = int(sys.argv[1])
-    else:
-        print("Usage: python crawler.py <max_digit>")
-        print("Outputs the first <max_digit> digits of pi after the decimal point.")
-    
+    parser = argparse.ArgumentParser(description="Get pi from the million pi API and print it in a pretty format.")
+
+    parser.add_argument("max_digits", type=int, help="Printing up to `max_digits` after decimal point.")
+    parser.add_argument("--digit_counter", action="store_true", help="Print digit counter. Default is False.")
+    parser.add_argument("--digits_in_group", type=int, default=5, help="Group `digits_in_group` digits. Print space between groups. Default is 5.")
+    parser.add_argument("--groups_in_line", type=int, default=10, help="Print `groups_in_line` numbers of group in a single line. Default is 10.")
+    args = parser.parse_args()
+ 
     buf = ""
 
     # The count represents the number of digits "after" the decimal point.
     # Therefore, the initial value is -2 to skip the "3." part.
     counter = -2 
     page_counter = 1
-    while counter < max_digit:
+    while counter < args.max_digits:
         data = get_page(page_counter)
-        buf, counter = pi_pretty_print(buf, data, counter=counter, group_size=5, newline_group=10, output_limit=max_digit, with_line_digit_counter=True)
+        buf, counter = pi_pretty_print(buf, data, counter=counter, group_size=args.digits_in_group, newline_group=args.groups_in_line, output_limit=args.max_digits, with_line_digit_counter=args.digit_counter)
         page_counter += 1
 
     print(buf)
